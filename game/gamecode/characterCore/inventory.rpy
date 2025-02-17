@@ -281,7 +281,7 @@ label InitInventory:
                 self.stash = []
                 self.stashActive = False
 
-                if (inventory):
+                if inventory:
                     self.items = copy.deepcopy(inventory.items)
                     self.money = inventory.money
 
@@ -290,7 +290,102 @@ label InitInventory:
                     self.RuneSlotThree = copy.deepcopy(inventory.RuneSlotThree)
 
                     self.AccessorySlot = copy.deepcopy(inventory.AccessorySlot)
+
+            @staticmethod
+            def revertInventory(stashInventory):
+                if type(stashInventory) is not StashInventory:
+                    return None
+
+                copiedInventory = copy.deepcopy(stashInventory)
+                copiedInventory.deactivateStash()
+
+                inventory = Inventory()
+                inventory.items = copy.deepcopy(copiedInventory.items)
+                inventory.money = copiedInventory.money
+
+                inventory.RuneSlotOne = copy.deepcopy(copiedInventory.RuneSlotOne)
+                inventory.RuneSlotTwo = copy.deepcopy(copiedInventory.RuneSlotTwo)
+                inventory.RuneSlotThree = copy.deepcopy(copiedInventory.RuneSlotThree)
+
+                inventory.AccessorySlot = copy.deepcopy(copiedInventory.AccessorySlot)
+                return inventory
             
+            @staticmethod
+            def isConsumable(item):
+                return item.itemType in ["Consumable", "DissonantConsumable", "CombatConsumable", "CombatConsumable"]
+
+            @staticmethod
+            def isItemOverLimit(item):
+                return StashInventory.isConsumable(item) and item.consumableLimit > 0 and item.NumberHeld > item.consumableLimit
+
+            @staticmethod
+            def isInTown():
+                return not explorationDeck
+
+            def limitItemCount(self, item):
+                if not self.stashActive:
+                    return False
+                
+                if StashInventory.isItemOverLimit(item):
+                    excessCount = item.NumberHeld - item.consumableLimit
+                    item.NumberHeld = item.consumableLimit
+                    
+                    existsInStash = getFromName(item.name, self.stash)
+
+                    if existsInStash > -1:
+                        self.stash[existsInStash].NumberHeld += excessCount
+                    else:
+                        itemCopy = copy.deepcopy(item)
+                        itemCopy.NumberHeld = excessCount
+                        self.stash.append(itemCopy)
+                    
+                    return True
+
+                return False
+
+            
+            def activateStash(self):
+                if self.stashActive:
+                    return False
+
+                self.stashActive = True
+
+                for item in self.items:
+                    self.limitItemCount(item)
+
+                return True
+
+            def deactivateStash(self):
+                if not self.stashActive:
+                    return False
+
+                self.stashActive = False
+
+                for item in self.stash:
+                    existsinInventory = getFromName(item.name, self.items)
+
+                    if existsinInventory > -1:
+                        self.items[existsinInventory].NumberHeld += item.NumberHeld
+                    else:
+                        itemCopy = copy.deepcopy(item)
+                        self.items.append(itemCopy)
+                
+                self.stash.clear()
+
+                return True
+
+            def buy(self, item, amount=1):
+                result = super().buy(item, amount)
+
+                if result:
+                    self.limitItemCount(self.items[getFromName(item.name, self.items)])
+                
+                return result
+
+            def give(self, itemName, amount=1):
+                super().give(itemName, amount)
+                self.limitItemCount(self.items[getFromName(itemName, self.items)])
+           
             def Update(self):
                 super().Update()
 
@@ -302,4 +397,4 @@ label InitInventory:
                 try:
                     self.stashActive
                 except:
-                    setattr(self, "stashActive", False)
+                    setattr(self, "stashActive", not StashInventory.isInTown())

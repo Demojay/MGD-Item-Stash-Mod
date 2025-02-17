@@ -25,9 +25,7 @@ game/debug/idname_validation.json
 game/debug/scene_validation.json
 game/gamecode/afterLoad.rpy
 game/gamecode/afterLoad.rpyc
-game/gamecode/hubTown.rpy
 game/gamecode/hubTown.rpyc
-game/gamecode/adventureCode/adventuring.rpy
 game/gamecode/adventureCode/adventuring.rpyc
 game/gamecode/adventureCode/AdventuringClasses.rpy
 game/gamecode/adventureCode/AdventuringClasses.rpyc
@@ -6802,6 +6800,4 @@ game/saves/auto-1-LT1.save
 game/saves/persistent
 traceback.txt
 log.txt
-game/saves/auto-2-LT1.save
-game/saves/auto-3-LT1.save
-game/saves/auto-4-LT1.save
+game/saves/*
