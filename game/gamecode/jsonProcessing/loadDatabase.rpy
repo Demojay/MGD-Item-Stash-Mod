@@ -1780,19 +1780,20 @@ label loadDatabase:
                         player.inventory.items[i].requiresEvent = [Requirements()]
                     i+=1
                 
-            #CODEMOD:Rebuild player stash items
-            if type(player.inventory) is StashInventory:
-                for i, each in enumerate(player.inventory.stash):
-                    amount = copy.deepcopy(each.NumberHeld)
+                #CODEMOD:Rebuild player stash items
+                if type(player.inventory) is StashInventory:
+                    for i, each in enumerate(player.inventory.stash):
 
-                    if each.name == eachNew.name:
-                        player.inventory.stash[i] = copy.deepcopy(eachNew)
-                        player.inventory.stash[i].NumberHeld = amount
+                        if each.name == eachNew.name:
+                            amount = copy.deepcopy(each.NumberHeld)
 
-                #Update inventory with updated consumable limits
-                if player.inventory.stashActive:
-                    for item in player.inventory.items:
-                        player.inventory.limitItemCount(item)
+                            player.inventory.stash[i] = copy.deepcopy(eachNew)
+                            player.inventory.stash[i].NumberHeld = amount
+
+            #Update inventory with updated consumable limits
+            if type(player.inventory) is StashInventory and player.inventory.stashActive:
+                for item in player.inventory.items:
+                    player.inventory.limitItemCount(item)
 
 
             i = 0

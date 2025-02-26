@@ -34,7 +34,6 @@ game/gamecode/adventureCode/on_map.rpyc
 game/gamecode/characterCore/inventory.rpyc
 game/gamecode/characterCore/monster.rpy
 game/gamecode/characterCore/monster.rpyc
-game/gamecode/characterCore/player.rpy
 game/gamecode/characterCore/player.rpyc
 game/gamecode/characterCore/statFloorAndCaps.rpy
 game/gamecode/characterCore/statFloorAndCaps.rpyc
@@ -111,7 +110,6 @@ game/gamecode/screens/on_buyMenu.rpy
 game/gamecode/screens/on_buyMenu.rpyc
 game/gamecode/screens/on_characterCreator.rpy
 game/gamecode/screens/on_characterCreator.rpyc
-game/gamecode/screens/on_charactermenu.rpy
 game/gamecode/screens/on_charactermenu.rpyc
 game/gamecode/screens/on_common.rpy
 game/gamecode/screens/on_common.rpyc
