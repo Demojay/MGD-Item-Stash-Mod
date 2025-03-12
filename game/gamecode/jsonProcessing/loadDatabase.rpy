@@ -366,6 +366,23 @@ label loadDatabase:
                 perkLenCheck = copy.deepcopy(len(PerkDatabase))
 
     ############################### LOAD ITEMS ################################
+
+        #CODEMOD: Load config file for StashInventory
+        if renpy.android:
+            inventoryConfigFilePath = "Mods/StashInventoryConfig.json"
+        else:
+            inventoryConfigFilePath = "../Mods/StashInventoryConfig.json"
+
+        try:
+            inventoryConfigJSON = renpy.file(inventoryConfigFilePath).read().decode("utf-8")
+            inventoryConfig = json.loads(inventoryConfigJSON)
+
+            if "defaultLimit" in inventoryConfig:
+                StashInventory.DEFAULTLIMIT = int(inventoryConfig.get("defaultLimit", -1))
+        except:
+            StashInventory.DEFAULTLIMIT = -1
+        
+
         if loadingDatabaseType == 0:
             for each in dynamic_loader(".*/Items/.*"):
                 #print(each)
@@ -380,7 +397,7 @@ label loadDatabase:
                 additionLocation = AdditionCheck(ItemDatabase, "name")
 
                 if additionLocation != None:
-                    ItemDatabase[additionLocation].consumableLimit = currentData.get("consumableLimit", -1)
+                    ItemDatabase[additionLocation].consumableLimit = currentData.get("consumableLimit", StashInventory.DEFAULTLIMIT)
                 else:
                     NewItemBodySensitivity = BodySensitivity()
                     NewItemStatusEffectsRes = ResistancesStatusEffects()
@@ -423,7 +440,7 @@ label loadDatabase:
                         requirementList = [Requirements()]
                     
                     #CODEMOD
-                    newConsumableLimit = currentData.get("consumableLimit", -1)
+                    newConsumableLimit = currentData.get("consumableLimit", StashInventory.DEFAULTLIMIT)
 
                     if loadingDatabaseType == 0:
                         blankItem = Item(

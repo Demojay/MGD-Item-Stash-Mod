@@ -290,6 +290,9 @@ label InitInventory:
                     self.RuneSlotThree = copy.deepcopy(inventory.RuneSlotThree)
 
                     self.AccessorySlot = copy.deepcopy(inventory.AccessorySlot)
+            
+            #Static variable denoting the default number of consumables that can be used per item per adventure
+            DEFAULTLIMIT = -1
 
             @staticmethod
             def revertInventory(stashInventory):
@@ -312,7 +315,7 @@ label InitInventory:
             
             @staticmethod
             def isConsumable(item):
-                return item.itemType in ["Consumable", "DissonantConsumable", "CombatConsumable", "CombatConsumable"]
+                return item.itemType in ["Consumable", "DissonantConsumable", "CombatConsumable", "CombatConsumable", "NotCombatConsumable"]
 
             @staticmethod
             def isItemOverLimit(item):
@@ -371,6 +374,10 @@ label InitInventory:
                         self.items.append(itemCopy)
                 
                 self.stash.clear()
+
+                #Reset "on_charactermenu.rpy" variable, so only the main inventory is shown
+                global MainOrStash
+                MainOrStash = "Main"
 
                 return True
 
